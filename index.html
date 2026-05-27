@@ -101,17 +101,19 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
   background:rgba(10,10,15,.96);
   backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
   border-top:1px solid var(--bd2);
-  height:calc(var(--nav-h)+var(--sb));
-  padding-bottom:var(--sb);
-  display:flex;align-items:flex-start;justify-content:center;padding-top:6px;
+  /* total height = nav content area + safe area at bottom */
+  height:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding-top:10px;/* push icons+labels away from the top border */
 }
 .tbar-in{width:100%;max-width:480px;display:flex;align-items:flex-start;justify-content:space-around;}
-.titem{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:0;background:none;border:none;color:var(--t3);transition:color 140ms;}
+.titem{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:0;background:none;border:none;color:var(--t3);transition:color 140ms;}
 .titem.active{color:var(--acc)}
 .tico{height:26px;display:flex;align-items:center;justify-content:center;position:relative;}
-.tico svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform 200ms var(--spring);}
+.tico svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform 200ms var(--spring);}
 .titem.active .tico svg{stroke:var(--acc);transform:scale(1.12)}
-.tlabel{font-size:.58rem;font-weight:700;letter-spacing:.3px;text-transform:uppercase;}
+.tlabel{font-size:.6rem;font-weight:700;letter-spacing:.3px;text-transform:uppercase;}
 .tbadge{position:absolute;top:-3px;right:-6px;min-width:16px;height:16px;border-radius:99px;background:var(--acc);color:#fff;font-size:.55rem;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 3px;border:1.5px solid var(--bg);}
 
 /* ── Restaurant strip ── */
