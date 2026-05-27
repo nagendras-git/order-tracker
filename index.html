@@ -95,11 +95,13 @@ input,select,button{font-family:'DM Sans',sans-serif;}
 .member-chip.me .member-name{color:var(--acc)}
 
 /* TOTAL STRIP */
-.total-strip{position:fixed;bottom:calc(var(--nav-h)+env(safe-area-inset-bottom,0px));left:0;right:0;z-index:201;max-width:480px;margin:0 auto;padding:10px 14px;background:rgba(10,10,15,.98);backdrop-filter:blur(20px);border-top:1px solid var(--bd2);display:none;align-items:center;justify-content:space-between;gap:12px;}
+.total-strip{position:fixed;bottom:calc(var(--nav-h)+env(safe-area-inset-bottom,0px));left:0;right:0;z-index:201;max-width:480px;margin:0 auto;padding:10px 14px;background:rgba(10,10,15,.98);backdrop-filter:blur(20px);border-top:1px solid var(--bd2);align-items:center;justify-content:space-between;gap:12px;display:none;}
+.total-strip.show{display:flex;}
 .total-lbl{font-size:.6rem;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase}
 .total-val{font-size:1.5rem;font-weight:800;color:var(--acc);letter-spacing:-.5px;font-family:'DM Mono',monospace;line-height:1}
 .total-sub{font-size:.68rem;color:var(--t3);margin-top:2px}
-.fab{position:fixed;bottom:calc(var(--nav-h)+env(safe-area-inset-bottom,0px)+68px);right:16px;z-index:201;width:52px;height:52px;border-radius:50%;background:var(--acc);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(249,115,22,.4);transition:all .15s var(--spring);}
+.fab{position:fixed;bottom:calc(var(--nav-h)+env(safe-area-inset-bottom,0px)+68px);right:16px;z-index:202;width:52px;height:52px;border-radius:50%;background:var(--acc);border:none;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(249,115,22,.4);transition:all .15s var(--spring);display:none;}
+.fab.show{display:flex;}
 .fab:active{transform:scale(.92)}
 .fab svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;}
 
@@ -387,7 +389,8 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 // ── State ──
-let myName='', myColor='', sessionCode='', isHost=false, vegMode='other', unsubFn=null;
+let myName='', myColor='', myUid='', sessionCode='', isHost=false, vegMode='other', unsubFn=null;
+const makeUid = () => Math.random().toString(36).substr(2,8);
 
 // ── Helpers ──
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -416,8 +419,8 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   const isSession = id === 's-session';
-  document.getElementById('total-strip').style.display = isSession ? 'flex' : 'none';
-  document.getElementById('fab').style.display = isSession ? 'flex' : 'none';
+  document.getElementById('total-strip').classList.toggle('show', isSession);
+  document.getElementById('fab').classList.toggle('show', isSession);
 }
 
 // ── Home buttons ──
@@ -444,11 +447,11 @@ document.getElementById('ns-start-ok').onclick = async () => {
   const btn = document.getElementById('ns-start-ok');
   btn.innerHTML = '<div class="spinner"></div>';
   btn.disabled = true;
-  myName=name; myColor=nameColor(name); isHost=true; sessionCode=genCode();
+  myName=name; myColor=nameColor(name); isHost=true; sessionCode=genCode(); myUid=makeUid();
   try {
     await db.ref(`sessions/${sessionCode}`).set({
       meta:{restaurant:rest,createdAt:Date.now(),hostName:name,active:true,expiresAt:Date.now()+12*3600*1000},
-      members:{[name]:{color:myColor,joinedAt:Date.now()}}
+      members:{[myUid]:{name:myName,color:myColor,joinedAt:Date.now()}}
     });
     document.getElementById('ns-start').classList.remove('open');
     document.getElementById('disp-code').textContent = sessionCode;
@@ -469,13 +472,13 @@ document.getElementById('ns-join-ok').onclick = async () => {
   if (code.length < 6) { toast('Enter 6-char code'); document.getElementById('join-code').focus(); return; }
   const btn = document.getElementById('ns-join-ok');
   btn.textContent = 'Joining…'; btn.disabled = true;
-  myName=name; myColor=nameColor(name); isHost=false; sessionCode=code;
+  myName=name; myColor=nameColor(name); isHost=false; sessionCode=code; myUid=makeUid();
   try {
     const snap = await db.ref(`sessions/${code}/meta`).once('value');
     if (!snap.exists()) { toast('Session not found', 3000); btn.textContent='Join session'; btn.disabled=false; return; }
     const meta = snap.val();
     if (!meta.active) { toast('Session has ended', 3000); btn.textContent='Join session'; btn.disabled=false; return; }
-    await db.ref(`sessions/${code}/members/${name}`).set({color:myColor,joinedAt:Date.now()});
+    await db.ref(`sessions/${code}/members/${myUid}`).set({name:myName,color:myColor,joinedAt:Date.now()});
     document.getElementById('ns-join').classList.remove('open');
     enterSession();
     toast('Joined ' + meta.restaurant + '!');
@@ -507,7 +510,7 @@ function enterSession() {
 function subscribeSession() {
   if (unsubFn) unsubFn();
   // Presence: remove self on disconnect
-  db.ref(`sessions/${sessionCode}/members/${myName}`).onDisconnect().remove();
+  db.ref(`sessions/${sessionCode}/members/${myUid}`).onDisconnect().remove();
   const sessRef = db.ref(`sessions/${sessionCode}`);
   sessRef.on('value', snap => {
     document.getElementById('conn-banner').classList.remove('show');
@@ -524,11 +527,13 @@ function renderSession(data) {
   document.getElementById('sess-rest').textContent = meta.restaurant||'Our Table';
   const members = data.members||{};
   // Members strip
-  document.getElementById('members-strip').innerHTML = Object.entries(members).map(([n,m])=>`
-    <div class="member-chip${n===myName?' me':''}">
+  document.getElementById('members-strip').innerHTML = Object.entries(members).map(([uid,m])=>{
+    const n = m.name || uid;
+    return `<div class="member-chip${n===myName&&uid===myUid?' me':''}">
       <div class="member-av" style="background:${m.color||nameColor(n)}">${initials(n)}</div>
-      <span class="member-name">${esc(n)}${n===myName?' (you)':''}</span>
-    </div>`).join('');
+      <span class="member-name">${esc(n)}${uid===myUid?' (you)':''}</span>
+    </div>`;
+  }).join('');
   // Orders
   const orders = data.orders ? Object.entries(data.orders).map(([id,o])=>({...o,id})) : [];
   renderFeed(orders, members);
@@ -536,7 +541,7 @@ function renderSession(data) {
   const total = orders.reduce((a,o)=>a+(o.price||0)*(o.qty||1),0);
   const count = orders.reduce((a,o)=>a+(o.qty||1),0);
   document.getElementById('total-val').textContent = fmt(total);
-  document.getElementById('total-sub').textContent = count+(count===1?' item':' items')+' · '+Object.keys(members).length+' people';
+  document.getElementById('total-sub').textContent = count+(count===1?' item':' items')+' · '+Object.keys(members).length+' at table';
 }
 
 function renderFeed(orders, members) {
@@ -545,6 +550,9 @@ function renderFeed(orders, members) {
     feed.innerHTML = '<div class="feed-empty"><div class="feed-empty-icon">🍽️</div>Waiting for first order…<br>Tap + to add items</div>';
     return;
   }
+  // Build name->color map from members
+  const nameColorMap = {};
+  Object.values(members).forEach(m=>{ if(m.name) nameColorMap[m.name] = m.color||nameColor(m.name); });
   const grouped={}, memberOrder={};
   orders.forEach(o=>{
     if(!grouped[o.orderedBy]){grouped[o.orderedBy]=[];memberOrder[o.orderedBy]=o.ts||0;}
@@ -556,7 +564,7 @@ function renderFeed(orders, members) {
   feed.innerHTML = people.map(person=>{
     const items = grouped[person].sort((a,b)=>(a.ts||0)-(b.ts||0));
     const pTotal = items.reduce((a,i)=>a+(i.price||0)*(i.qty||1),0);
-    const color = (members[person]&&members[person].color)||nameColor(person);
+    const color = nameColorMap[person] || nameColor(person);
     return `<div class="person-section">
       <div class="person-hdr">
         <div class="person-av" style="background:${color}">${initials(person)}</div>
