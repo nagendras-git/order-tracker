@@ -65,8 +65,8 @@
 [data-theme="light"] .sticky-bar{background:rgba(240,240,245,.96)!important;border-top:1px solid var(--bd)!important;}
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{height:100%;background:var(--bg)}
-body{font-family:'DM Sans',-apple-system,sans-serif;font-size:var(--fs);background:var(--bg);color:var(--t1);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+html{height:100%;background:var(--bg);font-size:15px}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
 ::-webkit-scrollbar{width:0;height:0}
 
 /* ── Header ── */
@@ -644,8 +644,14 @@ function applyDark() {
   const chk = document.getElementById('dark-chk'); if (chk) chk.checked = dark;
 }
 function applyFont() {
-  document.documentElement.style.setProperty('--fs', fs + 'px');
-  document.querySelectorAll('.sz').forEach(b => b.classList.toggle('active', +b.dataset.s === fs));
+  // rem units are relative to html font-size, so set that directly
+  // Use a dynamic <style> tag — most reliable method in iOS Safari PWA standalone mode
+  let st = document.getElementById('fs-override');
+  if (!st) { st = document.createElement('style'); st.id = 'fs-override'; document.head.appendChild(st); }
+  // Base: S=13px, M=15px, L=17px, XL=19px → map to html font-size so rem scales correctly
+  // The stylesheet uses var(--fs) for direct px refs and rem for proportional sizing
+  // Setting html font-size scales all rem values; --fs override scales var(--fs) references
+  st.textContent = `:root{--fs:${fs}px!important}html{font-size:${fs}px!important}`;
 }
 applyDark(); applyFont();
 
@@ -1118,7 +1124,7 @@ function renderSettings() {
 
 function setFontSize(size) {
   fs = size; save();
-  document.documentElement.style.setProperty('--fs', fs + 'px');
+  applyFont();
   // Re-render the size buttons so active state updates immediately
   const seg = document.getElementById('size-seg');
   if (seg) {
@@ -1126,6 +1132,7 @@ function setFontSize(size) {
       `<button class="sz${fs===s?' active':''}" data-s="${s}" onclick="setFontSize(${s})">${['S','M','L','XL'][i]}</button>`
     ).join('');
   }
+  toast('Text size updated');
 }
 
 // ── Init ──
