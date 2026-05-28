@@ -12,6 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root{
   --bg:#0a0a0f;--sf:#111118;--sf2:#18181f;--sf3:#222230;
@@ -121,7 +122,7 @@ input,select,button,textarea{font-family:'DM Sans',sans-serif;}
 
 /* ── SESSION ── */
 #s-session{flex-direction:column;padding-bottom:calc(env(safe-area-inset-bottom,0px)+80px)}
-.sess-hdr{padding-top:calc(env(safe-area-inset-top,0px)+10px);padding-bottom:10px;padding-left:16px;padding-right:16px;border-bottom:1px solid var(--bd2);background:rgba(10,10,15,.96);backdrop-filter:blur(20px);position:sticky;top:0;z-index:50}
+.sess-hdr{padding-top:max(env(safe-area-inset-top,0px),14px);padding-bottom:10px;padding-left:16px;padding-right:16px;border-bottom:1px solid var(--bd2);background:rgba(10,10,15,.96);backdrop-filter:blur(20px);position:sticky;top:0;z-index:50}
 .sess-hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
 .sess-rest{font-size:1rem;font-weight:700;color:var(--t1)}
 .sess-live{display:flex;align-items:center;gap:5px;font-size:.7rem;color:var(--green);font-weight:600}
@@ -140,7 +141,13 @@ input,select,button,textarea{font-family:'DM Sans',sans-serif;}
 /* feed */
 .feed{padding:8px 14px 0;max-width:480px;margin:0 auto;width:100%}
 .person-sec{margin-bottom:10px}
-.person-hdr{display:flex;align-items:center;gap:8px;padding:6px 0 5px}
+.person-hdr{display:flex;align-items:center;gap:8px;padding:6px 0 5px;cursor:pointer;user-select:none;-webkit-user-select:none}
+.person-hdr:active{opacity:.7}
+.p-caret{margin-left:auto;color:var(--t3);transition:transform .25s var(--ease);display:flex;align-items:center;flex-shrink:0}
+.p-caret svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
+.p-caret.open{transform:rotate(180deg)}
+.person-items{overflow:hidden;max-height:4000px;opacity:1;transition:max-height .35s var(--ease),opacity .2s ease}
+.person-items.collapsed{max-height:0;opacity:0;pointer-events:none}
 .p-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;flex-shrink:0}
 .p-name{font-size:.9rem;font-weight:700;color:var(--t1)}
 .p-you{font-size:.65rem;color:var(--acc);font-weight:600;margin-left:2px}
@@ -356,7 +363,7 @@ input,select,button,textarea{font-family:'DM Sans',sans-serif;}
     <div style="font-size:.72rem;color:var(--t3);text-transform:uppercase;letter-spacing:.4px">Session Code</div>
     <div class="share-code" id="disp-code">——</div>
     <div class="share-hint">Everyone scans or enters this code</div>
-    <div class="qr-wrap"><svg width="110" height="110" viewBox="0 0 110 110" id="qr-svg"></svg></div>
+    <div class="qr-wrap"><div id="qr-svg" style="line-height:0"></div></div>
     <div class="share-btns">
       <button class="share-btn" id="copy-btn">
         <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -485,14 +492,14 @@ input,select,button,textarea{font-family:'DM Sans',sans-serif;}
     </div>
     <div style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rl);padding:14px;text-align:center;margin-bottom:12px">
       <div style="font-size:.62rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Scan to join</div>
-      <div style="display:inline-block;background:white;padding:10px;border-radius:8px"><svg width="100" height="100" viewBox="0 0 100 100" id="info-qr"></svg></div>
+      <div style="display:inline-block;background:white;padding:10px;border-radius:8px"><div id="info-qr" style="line-height:0"></div></div>
     </div>
     <div style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;margin-bottom:12px">
       <div style="padding:9px 14px;border-bottom:1px solid var(--bd2);font-size:.62rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px">At the table</div>
       <div id="info-members"></div>
     </div>
     <div style="display:flex;flex-direction:column;gap:8px">
-      <button class="btn-p" id="save-summary-btn" style="background:var(--sf2);border:1px solid var(--bd);color:var(--t2)">
+      <button class="btn-p" id="save-summary-btn" style="background:var(--sf2);border-color:var(--bd);color:var(--t2);margin-bottom:0">
         <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
         Save summary to device
       </button>
@@ -541,6 +548,10 @@ const db = firebase.database();
 let myName='',myColor='',myUid='',sessionCode='',isHost=false,vegMode='other';
 let unsubFn=null,_sessData=null,splitOpen=false,gstPct=5;
 const makeUid=()=>Math.random().toString(36).substr(2,8);
+
+// Restore identity from sessionStorage (handles page refresh / brief disconnect)
+function saveIdentity(){try{sessionStorage.setItem('ds_id',JSON.stringify({myName,myColor,myUid,sessionCode,isHost}));}catch(e){}}
+function restoreIdentity(){try{const d=JSON.parse(sessionStorage.getItem('ds_id')||'null');if(d&&d.sessionCode&&d.myUid){myName=d.myName;myColor=d.myColor;myUid=d.myUid;sessionCode=d.sessionCode;isHost=d.isHost;return true;}}catch(e){}return false;}
 const COLORS=['#f97316','#8b5cf6','#06b6d4','#ec4899','#10b981','#f59e0b','#ef4444','#3b82f6'];
 const nameColor=n=>COLORS[n.split('').reduce((a,c)=>a+c.charCodeAt(0),0)%COLORS.length];
 const initials=n=>n.trim().split(' ').map(w=>w[0]).join('').toUpperCase().substr(0,2);
@@ -608,6 +619,7 @@ document.getElementById('ns-start-ok').onclick=async()=>{
     document.getElementById('disp-code').textContent=sessionCode;
     renderQR(sessionCode,'qr-svg',110);
     showScreen('s-created');toast('Session created!');
+    saveIdentity();
   }catch(e){toast('Connection error',3000);console.error(e);}
   btn.textContent='Create session';btn.disabled=false;
 };
@@ -628,6 +640,7 @@ document.getElementById('ns-join-ok').onclick=async()=>{
     if(!meta.active){toast('Session has ended',3000);btn.textContent='Join session';btn.disabled=false;return;}
     await db.ref(`sessions/${code}/members/${myUid}`).set({name:myName,color:myColor,joinedAt:Date.now()});
     document.getElementById('ns-join').classList.remove('open');
+    saveIdentity();
     enterSession();toast('Joined '+meta.restaurant+'!');
   }catch(e){toast('Connection error',3000);console.error(e);}
   btn.textContent='Join session';btn.disabled=false;
@@ -702,13 +715,15 @@ function renderFeed(orders,members,categories){
     const pTotal=items.reduce((a,i)=>a+(i.price||0)*(i.qty||1),0);
     const color=nameColorMap[person]||nameColor(person);
     const isMe=person===myName;
-    return `<div class="person-sec">
-      <div class="person-hdr">
+    return `<div class="person-sec" id="psec-${person.replace(/[^a-z0-9]/gi,'_')}">
+      <div class="person-hdr" onclick="togglePerson(this)">
         <div class="p-av" style="background:${color}">${initials(person)}</div>
         <div class="p-name">${esc(person)}${isMe?'<span class="p-you"> (you)</span>':''}</div>
         ${pTotal>0?`<div class="p-subtotal">${fmt(pTotal)}</div>`:''}
+        <div class="p-caret open"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
       </div>
-      ${items.map(item=>`
+      <div class="person-items">
+        ${items.map(item=>`
         <div class="item-card">
           <div class="item-top">
             <div class="veg-dot ${item.veg||'other'}"></div>
@@ -735,6 +750,7 @@ function renderFeed(orders,members,categories){
             <div class="item-time">${timeStr(item.ts)}</div>
           </div>
         </div>`).join('')}
+      </div>
     </div>`;
   }).join('');
 }
@@ -757,7 +773,14 @@ function renderSplit(orders,members){
   panel.classList.add('open');
 }
 
-// ── Item actions ──
+// ── Collapse/expand person ──
+window.togglePerson = hdr => {
+  const caret = hdr.querySelector('.p-caret');
+  const items = hdr.nextElementSibling;
+  if (!items) return;
+  const collapsed = items.classList.toggle('collapsed');
+  caret.classList.toggle('open', !collapsed);
+};
 function changeQty(itemId,delta){
   if(!_sessData?.orders?.[itemId])return;
   const item=_sessData.orders[itemId];
@@ -958,22 +981,43 @@ document.getElementById('end-ok').onclick=async()=>{
   catch(e){toast('Error',2000);}
 };
 
-// ── QR renderer ──
-function renderQR(text,svgId,size){
-  const svg=document.getElementById(svgId);if(!svg)return;
-  const cell=Math.floor(size/10),cols=10;
-  const hash=text.split('').reduce((a,c,i)=>a+(c.charCodeAt(0)*(i+1)),0);
-  let h='';
-  for(let r=0;r<cols;r++)for(let c=0;c<cols;c++){
-    const isFinder=(r<3&&c<3)||(r<3&&c>cols-4)||(r>cols-4&&c<3);
-    const isData=((hash*(r*cols+c+1))%7)<3;
-    if(isFinder||isData)h+=`<rect x="${c*cell}" y="${r*cell}" width="${cell-1}" height="${cell-1}" rx="1" fill="${isFinder?'#f97316':'#111118'}"/>`;
+// ── QR renderer (real scannable QR) ──
+const qrCache={};
+function renderQR(code, containerId, size){
+  const el=document.getElementById(containerId);
+  if(!el)return;
+  el.innerHTML='';
+  const url=location.href.split('?')[0]+'?code='+code;
+  try{
+    new QRCode(el,{text:url,width:size,height:size,colorDark:'#111118',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+  }catch(e){
+    // fallback: show code text if QRCode lib fails
+    el.innerHTML=`<div style="font-size:.7rem;color:var(--t3);padding:10px;text-align:center;word-break:break-all">${url}</div>`;
   }
-  svg.innerHTML=h;
 }
 
 // ── Auto-join from URL ──
 (()=>{const code=new URLSearchParams(location.search).get('code');if(code){document.getElementById('j-code').value=code.toUpperCase();setTimeout(()=>document.getElementById('btn-join').click(),500);}})();
+
+// ── Auto-restore after refresh/reconnect ──
+(async()=>{
+  if(restoreIdentity()){
+    try{
+      const snap=await db.ref(`sessions/${sessionCode}/meta`).once('value');
+      if(snap.exists()&&snap.val().active){
+        // Re-register member (in case we were removed)
+        await db.ref(`sessions/${sessionCode}/members/${myUid}`).set({name:myName,color:myColor,joinedAt:Date.now()});
+        document.getElementById('code-pill').textContent=sessionCode;
+        showScreen('s-session');
+        subscribeSession();
+        toast('Reconnected ✓',1500);
+        return;
+      }
+    }catch(e){}
+    // Session gone or error — clear and show home
+    try{sessionStorage.removeItem('ds_id');}catch(e){}
+  }
+})();
 
 // ── PWA ──
 (()=>{
