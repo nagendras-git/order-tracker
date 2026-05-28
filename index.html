@@ -22,7 +22,7 @@
   --green:#34d399;--gbg:rgba(52,211,153,.10);--gbd:rgba(52,211,153,.22);
   --amber:#fbbf24;--ambg:rgba(251,191,36,.10);--ambd:rgba(251,191,36,.22);
   --red:#f87171;--rbg:rgba(248,113,113,.10);--rbd:rgba(248,113,113,.22);
-  --nav-h:0px;--sb:env(safe-area-inset-bottom,0px);
+  --nav-h:62px;--sb:env(safe-area-inset-bottom,0px);
   --r:10px;--rl:14px;--rx:18px;
   --ease:cubic-bezier(.16,1,.3,1);--spring:cubic-bezier(.34,1.56,.64,1);
 }
@@ -37,7 +37,7 @@ input,select,button{font-family:'DM Sans',sans-serif;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
 /* HOME */
-#s-home{align-items:center;justify-content:center;padding:40px 24px;padding-top:calc(env(safe-area-inset-top,44px)+40px);padding-bottom:calc(env(safe-area-inset-bottom,0px)+40px);text-align:center;}
+#s-home{align-items:center;justify-content:center;padding:40px 24px;padding-top:calc(env(safe-area-inset-top,0px)+40px);padding-bottom:calc(env(safe-area-inset-bottom,0px)+40px);text-align:center;}
 .logo-mark{width:72px;height:72px;border-radius:20px;background:var(--acc);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 0 40px rgba(249,115,22,.3)}
 .logo-mark svg{width:36px;height:36px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;}
 .app-name{font-size:2rem;font-weight:800;color:var(--t1);letter-spacing:-.5px}
@@ -79,15 +79,23 @@ input,select,button{font-family:'DM Sans',sans-serif;}
 .go-btn:active{transform:scale(.98);background:var(--acc2)}
 
 /* SESSION */
-#s-session{flex-direction:column;padding-bottom:calc(80px + env(safe-area-inset-bottom,0px))}
-.session-hdr{padding-top:calc(env(safe-area-inset-top,44px)+12px);padding-bottom:12px;padding-left:16px;padding-right:16px;border-bottom:1px solid var(--bd2);background:rgba(10,10,15,.96);backdrop-filter:blur(20px);position:sticky;top:0;z-index:50;}
+#s-session{flex-direction:column;padding-bottom:calc(var(--nav-h)+env(safe-area-inset-bottom,0px)+80px)}
+.session-hdr{padding-top:calc(env(safe-area-inset-top,0px)+12px);padding-bottom:12px;padding-left:16px;padding-right:16px;border-bottom:1px solid var(--bd2);background:rgba(10,10,15,.96);backdrop-filter:blur(20px);position:sticky;top:0;z-index:50;}
 .session-hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .session-rest{font-size:1rem;font-weight:700;color:var(--t1)}
 .session-live{display:flex;align-items:center;gap:5px;font-size:.7rem;color:var(--green);font-weight:600}
 .live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .code-pill{font-size:.7rem;font-weight:700;color:var(--acc);background:var(--acc-bg);border:1px solid var(--acc-bd);padding:3px 9px;border-radius:99px;cursor:pointer}
-.end-btn{background:var(--rbg);border:1px solid var(--rbd);color:var(--red);padding:5px 10px;border-radius:var(--r);font-size:.72rem;font-weight:700;cursor:pointer;display:none}
+.info-btn{width:30px;height:30px;border-radius:50%;background:var(--sf2);border:1px solid var(--bd);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s}
+.info-btn:active{background:var(--sf3)}
+.info-btn svg{width:15px;height:15px;stroke:var(--t2);fill:none;stroke-width:1.8;stroke-linecap:round;}
+.end-btn{background:var(--rbg);border:1px solid var(--rbd);color:var(--red);padding:5px 10px;border-radius:var(--r);font-size:.72rem;font-weight:700;cursor:pointer}
+.info-member-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--bd2)}
+.info-member-row:last-child{border-bottom:none}
+.info-member-name{flex:1;font-size:.88rem;font-weight:600;color:var(--t1)}
+.host-badge{font-size:.6rem;font-weight:700;color:var(--acc);background:var(--acc-bg);border:1px solid var(--acc-bd);padding:2px 7px;border-radius:99px}
+.you-badge{font-size:.6rem;font-weight:700;color:var(--green);background:var(--gbg);border:1px solid var(--gbd);padding:2px 7px;border-radius:99px}
 .members-strip{display:flex;align-items:center;gap:6px;overflow-x:auto;padding-bottom:2px}
 .member-chip{display:flex;align-items:center;gap:5px;background:var(--sf2);border:1px solid var(--bd);border-radius:99px;padding:3px 8px 3px 3px;white-space:nowrap;flex-shrink:0}
 .member-av{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:#fff;flex-shrink:0}
@@ -95,15 +103,11 @@ input,select,button{font-family:'DM Sans',sans-serif;}
 .member-chip.me .member-name{color:var(--acc)}
 
 /* TOTAL STRIP */
-.total-strip{position:fixed;bottom:0;left:0;right:0;z-index:201;max-width:480px;margin:0 auto;padding:10px 14px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));background:rgba(10,10,15,.98);backdrop-filter:blur(20px);border-top:1px solid var(--bd2);align-items:center;justify-content:space-between;gap:12px;display:none;}
+.total-strip{position:fixed;bottom:calc(var(--nav-h)+env(safe-area-inset-bottom,0px));left:0;right:0;z-index:201;max-width:480px;margin:0 auto;padding:10px 14px;background:rgba(10,10,15,.98);backdrop-filter:blur(20px);border-top:1px solid var(--bd2);align-items:center;justify-content:space-between;gap:12px;display:none;}
 .total-strip.show{display:flex;}
 .total-lbl{font-size:.6rem;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase}
 .total-val{font-size:1.5rem;font-weight:800;color:var(--acc);letter-spacing:-.5px;font-family:'DM Mono',monospace;line-height:1}
 .total-sub{font-size:.68rem;color:var(--t3);margin-top:2px}
-.fab{position:fixed;bottom:calc(72px + env(safe-area-inset-bottom,0px));right:16px;z-index:202;width:52px;height:52px;border-radius:50%;background:var(--acc);border:none;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(249,115,22,.4);transition:all .15s var(--spring);display:none;}
-.fab.show{display:flex;}
-.fab:active{transform:scale(.92)}
-.fab svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;}
 
 /* FEED */
 .feed{padding:8px 14px 0;max-width:480px;margin:0 auto;width:100%}
@@ -181,7 +185,7 @@ input,select,button{font-family:'DM Sans',sans-serif;}
 .conn-banner.show{display:block}
 
 /* TOAST */
-.toast{position:fixed;bottom:calc(80px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%) translateY(6px);background:var(--sf);border:1px solid var(--bd);color:var(--t1);padding:9px 20px;border-radius:99px;font-size:.86rem;font-weight:600;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s var(--spring);white-space:nowrap;z-index:9999;box-shadow:0 4px 24px rgba(0,0,0,.5);}
+.toast{position:fixed;bottom:calc(var(--nav-h)+env(safe-area-inset-bottom,0px)+80px);left:50%;transform:translateX(-50%) translateY(6px);background:var(--sf);border:1px solid var(--bd);color:var(--t1);padding:9px 20px;border-radius:99px;font-size:.86rem;font-weight:600;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s var(--spring);white-space:nowrap;z-index:9999;box-shadow:0 4px 24px rgba(0,0,0,.5);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* SPINNER */
@@ -277,13 +281,15 @@ input,select,button{font-family:'DM Sans',sans-serif;}
   <div class="conn-banner" id="conn-banner">Reconnecting…</div>
   <div class="session-hdr">
     <div class="session-hdr-row">
-      <div>
+      <div style="min-width:0;flex:1">
         <div class="session-rest" id="sess-rest">Loading…</div>
-        <div class="session-live"><div class="live-dot"></div>Live</div>
+        <div class="session-live"><div class="live-dot"></div><span id="sess-live-label">Live</span></div>
       </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <div class="code-pill" id="code-pill">———</div>
-        <button class="end-btn" id="end-btn">End</button>
+      <div style="display:flex;align-items:center;gap:7px;flex-shrink:0">
+        <div class="code-pill" id="code-pill" onclick="openSessionInfo()">———</div>
+        <button class="info-btn" id="info-btn" onclick="openSessionInfo()" title="Session info">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </button>
       </div>
     </div>
     <div class="members-strip" id="members-strip"></div>
@@ -305,10 +311,6 @@ input,select,button{font-family:'DM Sans',sans-serif;}
     Add item
   </button>
 </div>
-
-<button class="fab" id="fab">
-  <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-</button>
 
 <!-- ADD ITEM SHEET -->
 <div class="sheet-ov" id="add-ov"></div>
@@ -355,6 +357,59 @@ input,select,button{font-family:'DM Sans',sans-serif;}
       <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
       Add to session
     </button>
+  </div>
+</div>
+
+<!-- SESSION INFO SHEET -->
+<div class="sheet-ov" id="info-ov"></div>
+<div class="sheet" id="info-sheet">
+  <div class="shdl"></div>
+  <div class="sheet-hdr">
+    <div class="sheet-title">Session info</div>
+    <button class="sheet-close" id="info-close">✕</button>
+  </div>
+  <div class="sheet-body">
+    <!-- Code block -->
+    <div style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rl);padding:16px;text-align:center;margin-bottom:12px">
+      <div style="font-size:.62rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Session Code</div>
+      <div style="font-size:2rem;font-weight:800;color:var(--acc);letter-spacing:8px;font-family:'DM Mono',monospace;margin-bottom:10px" id="info-code">——</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button class="share-btn" id="info-copy-btn">
+          <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy link
+        </button>
+        <button class="share-btn" id="info-share-btn">
+          <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          Share
+        </button>
+      </div>
+    </div>
+    <!-- QR -->
+    <div style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rl);padding:14px;text-align:center;margin-bottom:12px">
+      <div style="font-size:.62rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Scan to join</div>
+      <div style="display:inline-block;background:white;padding:10px;border-radius:10px">
+        <svg width="110" height="110" viewBox="0 0 110 110" id="info-qr-svg"></svg>
+      </div>
+    </div>
+    <!-- Members -->
+    <div style="background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden;margin-bottom:12px">
+      <div style="padding:10px 14px;border-bottom:1px solid var(--bd2);font-size:.62rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px">At the table</div>
+      <div id="info-members-list"></div>
+    </div>
+    <!-- End session — host only -->
+    <div id="end-host-wrap">
+      <button style="width:100%;padding:13px;border-radius:var(--r);background:var(--rbg);border:1px solid var(--rbd);color:var(--red);font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" id="end-from-info">
+        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        End session for everyone
+      </button>
+    </div>
+    <!-- Leave session — non-host -->
+    <div id="leave-wrap" style="display:none">
+      <button style="width:100%;padding:13px;border-radius:var(--r);background:var(--sf2);border:1px solid var(--bd);color:var(--t2);font-size:.9rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" id="leave-btn">
+        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Leave session
+      </button>
+    </div>
   </div>
 </div>
 
@@ -420,7 +475,6 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
   const isSession = id === 's-session';
   document.getElementById('total-strip').classList.toggle('show', isSession);
-  document.getElementById('fab').classList.toggle('show', isSession);
 }
 
 // ── Home buttons ──
@@ -504,7 +558,6 @@ document.getElementById('share-btn').onclick = () => {
 function enterSession() {
   showScreen('s-session');
   document.getElementById('code-pill').textContent = sessionCode;
-  document.getElementById('end-btn').style.display = isHost ? '' : 'none';
   subscribeSession();
 }
 
@@ -524,9 +577,12 @@ function subscribeSession() {
 }
 
 function renderSession(data) {
+  _sessionData = data; // cache for info sheet
   const meta = data.meta||{};
   document.getElementById('sess-rest').textContent = meta.restaurant||'Our Table';
   const members = data.members||{};
+  const memberCount = Object.keys(members).length;
+  document.getElementById('sess-live-label').textContent = `Live · ${memberCount} ${memberCount===1?'person':'people'}`;
   // Members strip
   document.getElementById('members-strip').innerHTML = Object.entries(members).map(([uid,m])=>{
     const n = m.name || uid;
@@ -608,7 +664,6 @@ function closeAddSheet() {
   document.getElementById('add-sheet').classList.remove('open');
   document.body.style.overflow='';
 }
-document.getElementById('fab').onclick = openAddSheet;
 document.getElementById('add-item-btn').onclick = openAddSheet;
 document.getElementById('sheet-close').onclick = closeAddSheet;
 document.getElementById('add-ov').onclick = e => { if(e.target===document.getElementById('add-ov')) closeAddSheet(); };
@@ -658,8 +713,82 @@ function delItem(itemId) {
 window.setStatus = setStatus;
 window.delItem = delItem;
 
-// ── End session ──
-document.getElementById('end-btn').onclick = ()=>document.getElementById('end-sheet').classList.add('open');
+// ── Session info sheet ──
+let _sessionData = null; // cache latest session data for info sheet
+
+function openSessionInfo() {
+  document.getElementById('info-code').textContent = sessionCode;
+  renderInfoQR(sessionCode);
+  // Show/hide end vs leave based on host
+  document.getElementById('end-host-wrap').style.display = isHost ? 'block' : 'none';
+  document.getElementById('leave-wrap').style.display = isHost ? 'none' : 'block';
+  // Members list
+  renderInfoMembers();
+  document.getElementById('info-ov').classList.add('open');
+  document.getElementById('info-sheet').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeInfoSheet() {
+  document.getElementById('info-ov').classList.remove('open');
+  document.getElementById('info-sheet').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function renderInfoMembers() {
+  if (!_sessionData) return;
+  const members = _sessionData.members || {};
+  const hostName = _sessionData.meta?.hostName || '';
+  document.getElementById('info-members-list').innerHTML = Object.entries(members).map(([uid,m]) => {
+    const n = m.name || uid;
+    const isMe = uid === myUid;
+    const isHostMember = n === hostName;
+    return `<div class="info-member-row">
+      <div class="person-av" style="background:${m.color||nameColor(n)};width:28px;height:28px;font-size:.72rem">${initials(n)}</div>
+      <span class="info-member-name">${esc(n)}</span>
+      ${isHostMember ? '<span class="host-badge">Host</span>' : ''}
+      ${isMe ? '<span class="you-badge">You</span>' : ''}
+    </div>`;
+  }).join('') || '<div style="padding:12px 14px;font-size:.84rem;color:var(--t3)">No members yet</div>';
+}
+function renderInfoQR(text) {
+  const svg = document.getElementById('info-qr-svg');
+  if (!svg) return;
+  const size=110, cell=10, cols=size/cell;
+  const hash = text.split('').reduce((a,c,i)=>a+(c.charCodeAt(0)*(i+1)),0);
+  let h='';
+  for(let r=0;r<cols;r++) for(let c2=0;c2<cols;c2++){
+    const isFinder=(r<3&&c2<3)||(r<3&&c2>cols-4)||(r>cols-4&&c2<3);
+    const isData=((hash*(r*cols+c2+1))%7)<3;
+    if(isFinder||isData)
+      h+=`<rect x="${c2*cell}" y="${r*cell}" width="${cell-1}" height="${cell-1}" rx="1" fill="${isFinder?'#f97316':'#111118'}"/>`;
+  }
+  svg.innerHTML = h;
+}
+document.getElementById('info-close').onclick = closeInfoSheet;
+document.getElementById('info-ov').onclick = e => { if(e.target===document.getElementById('info-ov')) closeInfoSheet(); };
+document.getElementById('info-copy-btn').onclick = () => {
+  const url = location.href.split('?')[0]+'?code='+sessionCode;
+  if (navigator.clipboard) navigator.clipboard.writeText(url).then(()=>toast('Link copied!'));
+  else { const i=document.createElement('input');i.value=url;document.body.appendChild(i);i.select();document.execCommand('copy');document.body.removeChild(i);toast('Copied!'); }
+};
+document.getElementById('info-share-btn').onclick = () => {
+  const url = location.href.split('?')[0]+'?code='+sessionCode;
+  if (navigator.share) navigator.share({title:'Join DineSync',text:'Session: '+sessionCode,url});
+  else document.getElementById('info-copy-btn').click();
+};
+document.getElementById('end-from-info').onclick = () => {
+  closeInfoSheet();
+  setTimeout(()=>document.getElementById('end-sheet').classList.add('open'), 300);
+};
+document.getElementById('leave-btn').onclick = async () => {
+  try {
+    await db.ref(`sessions/${sessionCode}/members/${myUid}`).remove();
+    if(unsubFn) unsubFn();
+    closeInfoSheet();
+    showScreen('s-home');
+    toast('You left the session');
+  } catch(e) { toast('Error leaving', 2000); }
+};
+window.openSessionInfo = openSessionInfo;
 document.getElementById('end-cancel').onclick = ()=>document.getElementById('end-sheet').classList.remove('open');
 document.getElementById('end-ok').onclick = async ()=>{
   try {
