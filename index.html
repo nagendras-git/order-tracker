@@ -79,7 +79,7 @@ input,select,button{font-family:'DM Sans',sans-serif;}
 .go-btn:active{transform:scale(.98);background:var(--acc2)}
 
 /* SESSION */
-#s-session{flex-direction:column;padding-bottom:calc(var(--nav-h)+env(safe-area-inset-bottom,0px)+80px)}
+#s-session{flex-direction:column;padding-bottom:calc(env(safe-area-inset-bottom,0px)+80px)}
 .session-hdr{padding-top:calc(env(safe-area-inset-top,0px)+12px);padding-bottom:12px;padding-left:16px;padding-right:16px;border-bottom:1px solid var(--bd2);background:rgba(10,10,15,.96);backdrop-filter:blur(20px);position:sticky;top:0;z-index:50;}
 .session-hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .session-rest{font-size:1rem;font-weight:700;color:var(--t1)}
@@ -103,7 +103,7 @@ input,select,button{font-family:'DM Sans',sans-serif;}
 .member-chip.me .member-name{color:var(--acc)}
 
 /* TOTAL STRIP */
-.total-strip{position:fixed;bottom:calc(var(--nav-h)+env(safe-area-inset-bottom,0px));left:0;right:0;z-index:201;max-width:480px;margin:0 auto;padding:10px 14px;background:rgba(10,10,15,.98);backdrop-filter:blur(20px);border-top:1px solid var(--bd2);align-items:center;justify-content:space-between;gap:12px;display:none;}
+.total-strip{position:fixed;bottom:env(safe-area-inset-bottom,0px);left:0;right:0;z-index:201;max-width:480px;margin:0 auto;padding:12px 14px;background:rgba(10,10,15,.98);backdrop-filter:blur(20px);border-top:1px solid var(--bd2);align-items:center;justify-content:space-between;gap:12px;display:none;}
 .total-strip.show{display:flex;}
 .total-lbl{font-size:.6rem;font-weight:700;color:var(--t3);letter-spacing:.4px;text-transform:uppercase}
 .total-val{font-size:1.5rem;font-weight:800;color:var(--acc);letter-spacing:-.5px;font-family:'DM Mono',monospace;line-height:1}
@@ -185,7 +185,7 @@ input,select,button{font-family:'DM Sans',sans-serif;}
 .conn-banner.show{display:block}
 
 /* TOAST */
-.toast{position:fixed;bottom:calc(var(--nav-h)+env(safe-area-inset-bottom,0px)+80px);left:50%;transform:translateX(-50%) translateY(6px);background:var(--sf);border:1px solid var(--bd);color:var(--t1);padding:9px 20px;border-radius:99px;font-size:.86rem;font-weight:600;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s var(--spring);white-space:nowrap;z-index:9999;box-shadow:0 4px 24px rgba(0,0,0,.5);}
+.toast{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px)+90px);left:50%;transform:translateX(-50%) translateY(6px);background:var(--sf);border:1px solid var(--bd);color:var(--t1);padding:9px 20px;border-radius:99px;font-size:.86rem;font-weight:600;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s var(--spring);white-space:nowrap;z-index:9999;box-shadow:0 4px 24px rgba(0,0,0,.5);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* SPINNER */
