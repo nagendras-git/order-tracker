@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="OrderTracker">
-<meta name="theme-color" content="#0a0a0f">
+<meta name="theme-color" content="#141414">
 <title>OrderTracker</title>
 <script>
 (function(){
@@ -15,7 +15,7 @@
   var mf=JSON.stringify({
     name:'OrderTracker',short_name:'OrderTracker',
     start_url:'./',display:'standalone',
-    background_color:'#1c120a',theme_color:'#f97316',
+    background_color:'#141414',theme_color:'#f97316',
     orientation:'portrait',
     icons:[
       {src:ic192,sizes:'192x192',type:'image/png'},
@@ -37,17 +37,18 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --bg:#0a0a0f;--sf:#111118;--sf2:#18181f;--sf3:#222230;
-  --bd:#2e2e42;--bd2:#252535;
-  --t1:#eeeef8;--t2:#9898b8;--t3:#5e5e7a;
-  --scrim:rgba(0,0,0,.78);
-  --acc:#f97316;--acc2:#ea6a0a;--acc-bg:rgba(249,115,22,.10);--acc-bd:rgba(249,115,22,.22);
-  --green:#34d399;--gbg:rgba(52,211,153,.10);
-  --red:#f87171;--rbg:rgba(248,113,113,.10);--rbd:rgba(248,113,113,.22);
+  --bg:#141414;--sf:#1c1c1e;--sf2:#242426;--sf3:#2c2c2e;
+  --bd:#3a3a3c;--bd2:#2c2c2e;
+  --t1:#f2f2f7;--t2:#8e8e93;--t3:#545458;
+  --scrim:rgba(0,0,0,.82);
+  --acc:#f97316;--acc2:#ea6a0a;--acc-bg:rgba(249,115,22,.08);--acc-bd:rgba(249,115,22,.16);
+  --green:#34d399;--gbg:rgba(52,211,153,.08);
+  --red:#f87171;--rbg:rgba(248,113,113,.08);--rbd:rgba(248,113,113,.18);
   --amber:#fbbf24;
+  /* monochrome surface accents — replaces orange tints on non-interactive elements */
+  --sf-acc:#16161f;--sf-acc-bd:#2a2a3e;
   --nav-h:62px;--sb:env(safe-area-inset-bottom,0px);
   --sat:env(safe-area-inset-top,0px);
-  /* hdr-h must exactly match the rendered header height so content isn't hidden behind it */
   --hdr-h:calc(env(safe-area-inset-top,0px) + 58px);
   --r:10px;--rl:14px;--rx:18px;
   --ease:cubic-bezier(.16,1,.3,1);--spring:cubic-bezier(.34,1.56,.64,1);
@@ -59,10 +60,23 @@
   --scrim:rgba(0,0,0,.42);
   --acc-bg:rgba(249,115,22,.07);--acc-bd:rgba(249,115,22,.18);
   --gbg:rgba(52,211,153,.08);--rbg:rgba(248,113,113,.08);--rbd:rgba(248,113,113,.18);
+  --sf-acc:#f4f4fa;--sf-acc-bd:#d8d8ec;
 }
 [data-theme="light"] .hdr{background:rgba(240,240,245,.96)!important;}
 [data-theme="light"] .tbar{background:rgba(240,240,245,.96)!important;border-top:1px solid var(--bd)!important;}
 [data-theme="light"] .sticky-bar{background:rgba(240,240,245,.96)!important;border-top:1px solid var(--bd)!important;}
+[data-theme="dark"] .hdr{background:rgba(20,20,20,.97)!important;}
+[data-theme="dark"] .tbar{background:rgba(20,20,20,.97)!important;}
+[data-theme="dark"] .sticky-bar{background:rgba(20,20,20,.98)!important;}
+
+/* ── Light mode targeted fixes ── */
+[data-theme="light"] .cat-hdr{background:#fff;border:1px solid var(--bd);}
+[data-theme="light"] .items-card{background:#fff;border:1px solid var(--bd);}
+[data-theme="light"] .item-num{background:#e8e8f0;color:#505068;}
+[data-theme="light"] .item-del{border-color:#c0c0d0;color:#9090a8;}
+[data-theme="light"] .item-del:active{background:var(--red);color:#fff;border-color:var(--red);}
+/* qty buttons use colour in both modes */
+[data-theme="light"] .sticky-add-btn{border-color:var(--acc);}
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{height:100%;background:var(--bg);font-size:15px}
@@ -72,7 +86,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 /* ── Header ── */
 .hdr{
   position:fixed;top:0;left:0;right:0;z-index:80;
-  background:rgba(10,10,15,.96);
+  background:rgba(20,20,20,.97);
   backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
   border-bottom:1px solid var(--bd2);
   padding-top:max(env(safe-area-inset-top,0px), 14px);
@@ -98,7 +112,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 /* ── Tab bar — 4 items ── */
 .tbar{
   position:fixed;bottom:0;left:0;right:0;z-index:200;
-  background:rgba(10,10,15,.96);
+  background:rgba(20,20,20,.97);
   backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
   border-top:1px solid var(--bd2);
   /* total height = nav content area + safe area at bottom */
@@ -108,12 +122,12 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
   padding-top:10px;/* push icons+labels away from the top border */
 }
 .tbar-in{width:100%;max-width:480px;display:flex;align-items:flex-start;justify-content:space-around;}
-.titem{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:0;background:none;border:none;color:var(--t3);transition:color 140ms;}
+.titem{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:0;background:none;border:none;color:var(--t2);transition:color 140ms;}
 .titem.active{color:var(--acc)}
 .tico{height:26px;display:flex;align-items:center;justify-content:center;position:relative;}
 .tico svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform 200ms var(--spring);}
 .titem.active .tico svg{stroke:var(--acc);transform:scale(1.12)}
-.tlabel{font-size:.6rem;font-weight:700;letter-spacing:.3px;text-transform:uppercase;}
+.tlabel{font-size:.6rem;font-weight:700;letter-spacing:.3px;text-transform:uppercase;opacity:.9;}
 .tbadge{position:absolute;top:-3px;right:-6px;min-width:16px;height:16px;border-radius:99px;background:var(--acc);color:#fff;font-size:.55rem;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 3px;border:1.5px solid var(--bg);}
 
 /* ── Restaurant strip ── */
@@ -122,13 +136,29 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 .rest-field{flex:1;border:none;background:transparent;font-size:.9rem;font-family:'DM Sans',sans-serif;font-weight:500;color:var(--t1);outline:none;}
 .rest-field::placeholder{color:var(--t3)}
 
-/* ── Add Item card ── */
-.add-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rx);overflow:hidden;margin-bottom:10px;}
-.add-card-hdr{padding:13px 16px 0;display:flex;align-items:center;gap:8px;}
-.add-card-hdr-ico{width:26px;height:26px;border-radius:7px;background:var(--acc-bg);border:1px solid var(--acc-bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.add-card-hdr-ico svg{width:12px;height:12px;stroke:var(--acc);fill:none;stroke-width:2;stroke-linecap:round;}
-.add-card-title{font-size:.88rem;font-weight:700;color:var(--t1);}
-.add-card-body{padding:12px 16px 14px;display:flex;flex-direction:column;gap:10px;}
+/* ── FAB (floating add button) ── */
+.fab{
+  position:fixed;
+  bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 14px);
+  right:max(calc(50% - 240px + 14px),14px);
+  left:auto;
+  z-index:202;
+  width:44px;height:44px;border-radius:50%;
+  background:var(--acc);border:none;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  box-shadow:0 4px 20px rgba(249,115,22,.32);
+  transition:bottom .22s var(--ease),right .22s var(--ease),left .22s var(--ease),opacity .15s,box-shadow .2s,background .15s,transform .2s var(--spring);
+}
+.fab.hidden{opacity:0;pointer-events:none;}
+.fab:active{transform:scale(.92);background:var(--acc2)}
+.fab svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;}
+/* When sticky bar visible: FAB moves to LEFT side above bar to avoid overlapping Validate button */
+/* bar-up: hide FAB — sticky bar has its own + button */
+.fab.bar-up{opacity:0 !important;pointer-events:none !important;}
+
+/* ── Add Item card (hidden — form now lives in sheet) ── */
+.add-card{display:none;}
 
 /* form */
 .fg{display:flex;flex-direction:column;gap:5px;}
@@ -170,8 +200,8 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 .cat-hdr{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--rl);margin-bottom:4px;cursor:pointer;user-select:none;-webkit-user-select:none;transition:background 120ms;}
 .cat-hdr:active{background:var(--sf3)}
 .cat-hdr-l{display:flex;align-items:center;gap:8px;}
-.cat-ico{width:26px;height:26px;border-radius:7px;background:var(--acc-bg);border:1px solid var(--acc-bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.cat-ico svg{width:12px;height:12px;stroke:var(--acc);fill:none;stroke-width:2;stroke-linecap:round;}
+.cat-ico{width:26px;height:26px;border-radius:7px;background:var(--sf3);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cat-ico svg{width:12px;height:12px;stroke:var(--t2);fill:none;stroke-width:2;stroke-linecap:round;}
 .cat-name{font-size:.88rem;font-weight:700;color:var(--t1);}
 .cat-hdr-r{display:flex;align-items:center;gap:7px;flex-shrink:0;}
 .cat-sub{font-size:.7rem;font-weight:700;color:var(--acc);background:var(--acc-bg);border:1px solid var(--acc-bd);padding:2px 8px;border-radius:99px;white-space:nowrap;}
@@ -185,7 +215,14 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 .item-row{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--bd2);animation:slideIn .18s ease;}
 .item-row:last-child{border-bottom:none}
 @keyframes slideIn{from{opacity:0;transform:translateX(-5px)}to{opacity:1;transform:none}}
-.item-num{width:19px;height:19px;border-radius:50%;background:var(--sf2);border:1px solid var(--bd);font-size:.6rem;font-weight:700;color:var(--t3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Mono',monospace;}
+.item-num{
+  min-width:18px;height:18px;border-radius:4px;
+  background:var(--sf3);
+  font-size:.62rem;font-weight:700;color:var(--t2);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-family:'DM Mono',monospace;
+  padding:0 3px;
+}
 .veg-dot{width:9px;height:9px;border-radius:2px;border:1.5px solid;flex-shrink:0;position:relative;}
 .veg-dot::after{content:'';position:absolute;width:4px;height:4px;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);}
 .veg-dot.veg{border-color:var(--green)}.veg-dot.veg::after{background:var(--green)}
@@ -193,16 +230,16 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 .veg-dot.other{border-color:var(--t3)}.veg-dot.other::after{background:var(--t3)}
 .item-name{flex:1;font-size:.88rem;font-weight:600;color:var(--t1);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .item-qty-ctrl{display:flex;align-items:center;gap:2px;flex-shrink:0;}
-.iqbtn{width:23px;height:23px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;line-height:1;font-weight:700;}
+.iqbtn{width:22px;height:22px;border-radius:50%;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .12s;line-height:1;font-weight:600;}
 .iqbtn-minus{background:var(--rbg);border:1px solid var(--rbd);color:var(--red);}
 .iqbtn-minus:active{background:var(--red);color:#fff;border-color:var(--red)}
 .iqbtn-plus{background:var(--gbg);border:1px solid rgba(52,211,153,.22);color:var(--green);}
 .iqbtn-plus:active{background:var(--green);color:#fff;border-color:var(--green)}
 .iqnum{font-size:.8rem;font-weight:700;color:var(--t1);min-width:22px;text-align:center;font-family:'DM Mono',monospace;}
 /* FIX: price fixed width so it never clips */
-.item-price{font-size:.82rem;font-weight:700;color:var(--acc);flex-shrink:0;width:64px;text-align:right;font-family:'DM Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.item-price{font-size:.82rem;font-weight:600;color:var(--t1);flex-shrink:0;width:64px;text-align:right;font-family:'DM Mono',monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .item-del{background:var(--rbg);border:1px solid var(--rbd);cursor:pointer;color:var(--red);width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;transition:all .12s;}
-.item-del:active{background:var(--red);color:#fff}
+.item-del:active{background:var(--red);color:#fff;border-color:var(--red)}
 .item-del svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;}
 
 /* empty */
@@ -217,7 +254,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
   left:0;right:0;z-index:201;
   max-width:480px;margin:0 auto;
   padding:10px 14px;
-  background:rgba(10,10,15,.98);
+  background:rgba(20,20,20,.98);
   backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
   border-top:1px solid var(--bd2);
   display:none;
@@ -231,6 +268,10 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 .validate-btn{background:var(--acc);border:none;border-radius:var(--r);padding:11px 18px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:700;color:#fff;cursor:pointer;display:flex;align-items:center;gap:7px;white-space:nowrap;transition:all 150ms var(--spring);flex-shrink:0;}
 .validate-btn:active{transform:scale(.95);background:var(--acc2)}
 .validate-btn svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;}
+.sticky-add-btn{width:38px;height:38px;border-radius:50%;background:transparent;border:1.5px solid var(--acc);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .14s var(--spring);}
+.sticky-add-btn:active{transform:scale(.9);background:var(--acc);}
+.sticky-add-btn svg{width:16px;height:16px;stroke:var(--acc);fill:none;stroke-width:2.4;stroke-linecap:round;}
+.sticky-add-btn:active svg{stroke:#fff;}
 
 /* ── Categories tab ── */
 .cat-add-row{display:flex;gap:8px;margin-bottom:14px;}
@@ -242,12 +283,12 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 .cat-add-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;}
 .cat-list-wrap{display:flex;flex-direction:column;gap:6px;}
 .cat-item{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);display:flex;align-items:center;gap:10px;padding:12px 14px;}
-.cat-item-ico{width:34px;height:34px;border-radius:9px;background:var(--acc-bg);border:1px solid var(--acc-bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.cat-item-ico svg{width:15px;height:15px;stroke:var(--acc);fill:none;stroke-width:1.8;stroke-linecap:round;}
+.cat-item-ico{width:34px;height:34px;border-radius:9px;background:var(--sf3);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cat-item-ico svg{width:15px;height:15px;stroke:var(--t2);fill:none;stroke-width:1.8;stroke-linecap:round;}
 .cat-item-info{flex:1;min-width:0;}
 .cat-item-name{font-size:.92rem;font-weight:700;color:var(--t1);}
 .cat-item-sub{font-size:.7rem;color:var(--t3);margin-top:2px;}
-.cat-item-badge{font-size:.68rem;font-weight:700;color:var(--acc);background:var(--acc-bg);border:1px solid var(--acc-bd);padding:2px 9px;border-radius:99px;flex-shrink:0;white-space:nowrap;}
+.cat-item-badge{font-size:.68rem;font-weight:700;color:var(--t2);background:var(--sf3);border:1px solid var(--bd);padding:2px 9px;border-radius:99px;flex-shrink:0;white-space:nowrap;}
 .cat-item-del{background:var(--rbg);border:1px solid var(--rbd);cursor:pointer;color:var(--red);width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s;}
 .cat-item-del:active{background:var(--red);color:#fff}
 .cat-item-del svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;}
@@ -286,7 +327,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
   font-size:.88rem;
 }
 .hist-item-row span:first-child{color:var(--t1);font-weight:500;}
-.hist-item-row span:last-child{color:var(--acc);font-weight:700;font-family:'DM Mono',monospace;flex-shrink:0;margin-left:12px;}
+.hist-item-row span:last-child{color:var(--t1);font-weight:700;font-family:'DM Mono',monospace;flex-shrink:0;margin-left:12px;}
 
 /* Total footer: filled, stands apart clearly */
 .hist-grand{
@@ -297,7 +338,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
   margin-top:6px;
 }
 .hist-grand span:first-child{font-size:.72rem;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;}
-.hist-grand span:last-child{color:var(--acc);font-weight:800;font-size:1.05rem;font-family:'DM Mono',monospace;}
+.hist-grand span:last-child{color:var(--t1);font-weight:800;font-size:1.05rem;font-family:'DM Mono',monospace;}
 .no-hist{text-align:center;padding:44px 20px;color:var(--t3);font-size:.84rem;line-height:1.75;}
 
 /* ── History date group headers ── */
@@ -337,6 +378,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 .shtitle{font-size:.92rem;font-weight:800;color:var(--t1);}
 .shclose{width:28px;height:28px;border-radius:50%;background:var(--sf2);border:1px solid var(--bd);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.86rem;color:var(--t2);}
 .shbody{padding:14px 16px 4px;}
+.shbody-add{padding:12px 16px 16px;display:flex;flex-direction:column;gap:10px;}
 
 /* Validate sheet */
 .our-list{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rx);overflow:hidden;margin-bottom:10px;}
@@ -346,10 +388,10 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 .our-info{flex:1;min-width:0;}
 .our-name{color:var(--t1);font-weight:700;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .our-sec{font-size:.65rem;color:var(--t3);margin-top:1px;}
-.our-price{color:var(--acc);font-weight:700;flex-shrink:0;font-family:'DM Mono',monospace;font-size:.84rem;}
+.our-price{color:var(--t1);font-weight:700;flex-shrink:0;font-family:'DM Mono',monospace;font-size:.84rem;}
 .our-total-row{display:flex;justify-content:space-between;align-items:center;padding:10px 13px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:10px;}
 .our-total-row span{font-size:.84rem;font-weight:600;color:var(--t2);}
-.our-total-row span:last-child{font-size:1.1rem;font-weight:800;color:var(--acc);font-family:'DM Mono',monospace;}
+.our-total-row span:last-child{font-size:1.1rem;font-weight:800;color:var(--t1);font-family:'DM Mono',monospace;}
 .tax-tip-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
 .tax-tip-item{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
 .tax-tip-left{display:flex;flex-direction:column;gap:2px;}
@@ -422,65 +464,66 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 <div id="pg-home" class="pg active">
   <div class="wrap">
     <div class="rest-strip">
-      <svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+      <!-- plate + fork & knife restaurant icon -->
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M5 3v4c0 1.1.9 2 2 2s2-.9 2-2V3"/><line x1="7" y1="3" x2="7" y2="5"/><path d="M19 3v18"/><path d="M17 3c0 0 2 1.5 2 4s-2 4-2 4"/></svg>
       <input class="rest-field" id="rest-name" placeholder="Restaurant name (optional)" autocorrect="off"/>
-    </div>
-    <div class="add-card">
-      <div class="add-card-hdr">
-        <div class="add-card-hdr-ico">
-          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </div>
-        <span class="add-card-title">Add to Order</span>
-      </div>
-      <div class="add-card-body">
-        <div class="fg">
-          <label class="fl" for="ai-name">Item Name</label>
-          <input class="fi" id="ai-name" placeholder="e.g. Paneer Butter Masala" autocorrect="off"
-            onkeydown="if(event.key==='Enter')document.getElementById('ai-qty').focus()"/>
-        </div>
-        <div class="fi-row">
-          <div class="fg">
-            <label class="fl" for="ai-qty">Qty</label>
-            <input class="fi" id="ai-qty" type="number" value="1" min="1" inputmode="numeric"
-              onkeydown="if(event.key==='Enter')document.getElementById('ai-price').focus()"/>
-          </div>
-          <div class="fg">
-            <label class="fl" for="ai-price">Price</label>
-            <div class="fi-pfx-wrap">
-              <span class="fi-pfx">₹</span>
-              <input class="fi" id="ai-price" type="number" placeholder="0" min="0" inputmode="decimal"
-                onkeydown="if(event.key==='Enter')document.getElementById('ai-cat').focus()"/>
-            </div>
-          </div>
-        </div>
-        <div class="fg">
-          <label class="fl" for="ai-cat">Category</label>
-          <div class="fi-sel-wrap">
-            <select class="fi-sel" id="ai-cat"></select>
-          </div>
-        </div>
-        <div class="fg">
-          <label class="fl">Type</label>
-          <div class="veg-row" id="veg-row">
-            <button class="vseg" id="vseg-veg" onclick="setVeg('veg')"><div class="vdot"></div>Veg</button>
-            <button class="vseg" id="vseg-nveg" onclick="setVeg('nveg')"><div class="vdot"></div>Non-Veg</button>
-            <button class="vseg ao" id="vseg-other" onclick="setVeg('other')"><div class="vdot"></div>Other</button>
-          </div>
-        </div>
-        <button class="add-btn" onclick="submitItem()">
-          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Add to Order
-        </button>
-      </div>
     </div>
     <div id="order-list"></div>
     <div id="save-wrap" style="display:none;padding-bottom:10px;">
-      <button style="width:100%;padding:12px;border-radius:var(--r);background:var(--sf);border:1px solid var(--bd);font-family:'DM Sans',sans-serif;font-size:.84rem;font-weight:600;color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;" onclick="saveSession()">
+      <button style="width:100%;padding:12px;border-radius:var(--r);background:var(--sf2);border:1px solid var(--bd);font-family:'DM Sans',sans-serif;font-size:.84rem;font-weight:600;color:var(--t1);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;opacity:.85;" onclick="saveSession()">
         <svg width="15" height="15" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
         Save Order to History
       </button>
     </div>
   </div>
+</div>
+
+<!-- ══ FAB ══ -->
+<button class="fab" id="fab" onclick="openAddSheet()" aria-label="Add item">
+  <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  Add Item
+</button>
+
+<!-- Add Item fields — kept in DOM, moved into sheet dynamically -->
+<div id="add-form-tpl" style="display:none">
+  <div class="fg">
+    <label class="fl" for="ai-name">Item Name</label>
+    <input class="fi" id="ai-name" placeholder="e.g. Paneer Butter Masala" autocorrect="off"
+      onkeydown="if(event.key==='Enter')document.getElementById('ai-qty').focus()"/>
+  </div>
+  <div class="fi-row">
+    <div class="fg">
+      <label class="fl" for="ai-qty">Qty</label>
+      <input class="fi" id="ai-qty" type="number" value="1" min="1" inputmode="numeric"
+        onkeydown="if(event.key==='Enter')document.getElementById('ai-price').focus()"/>
+    </div>
+    <div class="fg">
+      <label class="fl" for="ai-price">Price</label>
+      <div class="fi-pfx-wrap">
+        <span class="fi-pfx">₹</span>
+        <input class="fi" id="ai-price" type="number" placeholder="0" min="0" inputmode="decimal"
+          onkeydown="if(event.key==='Enter')document.getElementById('ai-cat').focus()"/>
+      </div>
+    </div>
+  </div>
+  <div class="fg">
+    <label class="fl" for="ai-cat">Category</label>
+    <div class="fi-sel-wrap">
+      <select class="fi-sel" id="ai-cat"></select>
+    </div>
+  </div>
+  <div class="fg">
+    <label class="fl">Type</label>
+    <div class="veg-row" id="veg-row">
+      <button class="vseg" id="vseg-veg" onclick="setVeg('veg')"><div class="vdot"></div>Veg</button>
+      <button class="vseg" id="vseg-nveg" onclick="setVeg('nveg')"><div class="vdot"></div>Non-Veg</button>
+      <button class="vseg ao" id="vseg-other" onclick="setVeg('other')"><div class="vdot"></div>Other</button>
+    </div>
+  </div>
+  <button class="add-btn" onclick="submitItem()">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Add to Order
+  </button>
 </div>
 
 <!-- ══ CATEGORIES TAB ══ -->
@@ -538,15 +581,20 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 
 <!-- ══ STICKY TOTAL BAR ══ -->
 <div class="sticky-bar" id="sticky-bar">
-  <div>
+  <div style="display:flex;flex-direction:column;gap:0;min-width:0;">
     <div class="sticky-total-lbl">Your Total</div>
     <div class="sticky-total-val" id="sticky-total">₹0</div>
     <div class="sticky-sub" id="sticky-sub">0 items</div>
   </div>
-  <button class="validate-btn" onclick="openValidate()">
-    <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-    Validate Bill
-  </button>
+  <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+    <button class="sticky-add-btn" onclick="openAddSheet()" aria-label="Add item">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+    <button class="validate-btn" onclick="openValidate()">
+      <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Validate Bill
+    </button>
+  </div>
 </div>
 
 <!-- ══ TAB BAR — 4 items ══ -->
@@ -691,14 +739,41 @@ function switchTab(tab) {
 }
 
 // ── Sheet ──
+let _sheetHasForm = false;
 function openSheet(title, html) {
+  _sheetHasForm = false;
   document.getElementById('sh-title').textContent = title;
-  document.getElementById('sh-body').innerHTML = html;
+  const body = document.getElementById('sh-body');
+  body.className = 'shbody';
+  body.innerHTML = html;
   document.getElementById('sov').classList.add('open');
   document.getElementById('sheet').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
+function openAddSheet() {
+  if (!categories.length) { toast('Add a category first'); switchTab('cats'); return; }
+  _sheetHasForm = true;
+  document.getElementById('sh-title').textContent = 'Add Item';
+  const body = document.getElementById('sh-body');
+  body.className = 'shbody shbody-add';
+  // Move the real form fields into the sheet
+  const tpl = document.getElementById('add-form-tpl');
+  body.innerHTML = '';
+  // Move each child
+  while (tpl.firstElementChild) body.appendChild(tpl.firstElementChild);
+  document.getElementById('sov').classList.add('open');
+  document.getElementById('sheet').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => { try { document.getElementById('ai-name').focus(); } catch(e) {} }, 320);
+}
 function closeSheet() {
+  // If the add form is open, park fields back in tpl so they aren't lost
+  if (_sheetHasForm) {
+    const body = document.getElementById('sh-body');
+    const tpl = document.getElementById('add-form-tpl');
+    while (body.firstElementChild) tpl.appendChild(body.firstElementChild);
+    _sheetHasForm = false;
+  }
   document.getElementById('sov').classList.remove('open');
   document.getElementById('sheet').classList.remove('open');
   document.body.style.overflow = '';
@@ -799,7 +874,19 @@ function submitItem() {
   const cat = categories.find(c => c.id === catId);
   if (!cat) { toast('Select a valid category'); return; }
   const qty = Math.max(1, parseInt(document.getElementById('ai-qty').value) || 1);
-  const price = parseFloat(document.getElementById('ai-price').value) || 0;
+  const priceRaw = document.getElementById('ai-price').value;
+  const price = parseFloat(priceRaw);
+  if (!priceRaw || priceRaw.trim() === '' || isNaN(price) || price <= 0) {
+    const priceEl = document.getElementById('ai-price');
+    if (priceEl) {
+      priceEl.focus();
+      priceEl.style.borderColor = 'var(--red)';
+      priceEl.style.boxShadow = '0 0 0 3px rgba(248,113,113,.15)';
+      setTimeout(() => { priceEl.style.borderColor = ''; priceEl.style.boxShadow = ''; }, 2000);
+    }
+    toast('Enter item price');
+    return;
+  }
 
   let sec = sections.find(s => s.catId === catId);
   if (!sec) {
@@ -816,12 +903,18 @@ function submitItem() {
 
   save(); renderOrder(); updateStickyBar();
   toast(`${name}${qty > 1 ? ' ×' + qty : ''} added`);
+  closeSheet();
 }
 
 // ── Qty / Delete ──
 function changeQty(sid, iid, delta) {
   const s = sections.find(x => x.id === sid); if (!s) return;
   const item = s.items.find(i => i.id === iid); if (!item) return;
+  if (delta < 0 && item.qty === 1) {
+    // at qty 1, minus = delete
+    deleteItem(sid, iid);
+    return;
+  }
   item.qty = Math.max(1, item.qty + delta);
   save(); renderOrder(); updateStickyBar();
 }
@@ -848,7 +941,7 @@ function renderOrder() {
   const hasItems = sections.some(s => s.items.length);
   if (sw) sw.style.display = hasItems ? 'block' : 'none';
   if (!hasItems) {
-    wrap.innerHTML = `<div class="empty"><div class="empty-ico">🍽️</div><div class="empty-txt">Fill in the form above<br>to start building your order</div></div>`;
+    wrap.innerHTML = `<div class="empty"><div class="empty-ico">🍽️</div><div class="empty-txt">Tap <strong style="color:var(--t1)">+</strong> to add your first item<br>and start building your order</div></div>`;
     return;
   }
   let gi = 0;
@@ -901,6 +994,12 @@ function updateStickyBar() {
   document.getElementById('sticky-sub').textContent = count + (count === 1 ? ' item' : ' items');
   const badge = document.getElementById('badge-home');
   if (badge) { badge.style.display = count > 0 ? 'flex' : 'none'; badge.textContent = count > 99 ? '99+' : count; }
+  // FAB: shift up when sticky bar is visible, hide on non-home tabs
+  const fab = document.getElementById('fab');
+  if (fab) {
+    fab.classList.toggle('hidden', currentTab !== 'home');
+    fab.classList.toggle('bar-up', show);
+  }
 }
 
 // ── Validate ──
