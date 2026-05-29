@@ -105,6 +105,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 
 /* ── Pages ── */
 .pg{display:none;padding-top:calc(env(safe-area-inset-top,0px) + 72px);padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 160px);}
+#pg-hist.active{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 32px);}
 .pg.active{display:block;animation:pgIn .2s var(--ease) both}
 @keyframes pgIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 /* hist/settings/cats pages need less bottom pad (no sticky bar) */
@@ -142,7 +143,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 .fab{
   position:fixed;
   bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 16px);
-  right:16px;
+  right:max(16px, calc(50% - 240px + 16px));
   z-index:202;
   width:48px;height:48px;
   border-radius:50%;
@@ -304,7 +305,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 .hist-head{padding:14px 16px 12px;display:flex;justify-content:space-between;align-items:flex-start;}
 .hist-head-l{display:flex;flex-direction:column;gap:2px;}
 .hist-restaurant{font-size:.72rem;font-weight:600;color:var(--t3);letter-spacing:.2px;text-transform:uppercase;}
-.hist-total{font-size:1.35rem;font-weight:800;color:var(--acc);letter-spacing:-.5px;font-family:'DM Mono',monospace;line-height:1.1;}
+.hist-total{font-size:1.35rem;font-weight:800;color:var(--acc);letter-spacing:0;font-family:'DM Mono',monospace;line-height:1.1;}
 .hist-date{font-size:.68rem;color:var(--t3);margin-top:2px;}
 .hist-del{background:var(--rbg);border:1px solid var(--rbd);cursor:pointer;color:var(--red);width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s;margin-top:1px;}
 .hist-del:active{background:var(--red);color:#fff;border-color:var(--red)}
@@ -343,6 +344,9 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 .no-hist{text-align:center;padding:44px 20px;color:var(--t3);font-size:.84rem;line-height:1.75;}
 
 /* ── History date group headers ── */
+.hist-grp-amt{font-size:.72rem;font-weight:700;color:var(--acc);}
+.hist-group-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 4px;cursor:pointer;user-select:none;margin-bottom:6px;margin-top:4px;}
+.hist-group-row:active{opacity:.7}
 .hist-group-lbl{
   display:flex;align-items:center;gap:10px;
   margin:14px 0 8px;
@@ -720,7 +724,11 @@ applyDark(); applyFont();
 // ── Helpers ──
 const uid = () => Date.now().toString(36) + Math.random().toString(36).substr(2, 4);
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const fmt = n => '₹' + Number(n).toLocaleString('en-IN');
+const fmt = n => {
+  const num = Number(n);
+  if (num >= 1000) return '₹' + num.toLocaleString('en-IN');
+  return '₹' + num;
+};
 const grandTotal = () => sections.reduce((a, s) => a + s.items.reduce((b, i) => b + i.price * i.qty, 0), 0);
 const itemCount = () => sections.reduce((a, s) => a + s.items.reduce((b, i) => b + i.qty, 0), 0);
 function nowStr() {
@@ -1154,68 +1162,82 @@ function getDateGroup(dateStr) {
 function renderHist() {
   const el = document.getElementById('hist-list'); if (!el) return;
   if (!sessions.length) {
-    el.innerHTML = `<div class="no-hist">📋<br><br>No past orders yet.<br>Save your first order from the Order tab.</div>`;
+    el.innerHTML = '<div class="no-hist">📋<br><br>No past orders yet.<br>Save your first order from the Order tab.</div>';
     return;
   }
 
-  // Group sessions by relative date label
   const groups = [];
   const groupMap = {};
   const ORDER = ['Today','Yesterday','This Week','This Month'];
 
   sessions.forEach(s => {
     const label = getDateGroup(s.date);
-    if (!groupMap[label]) {
-      groupMap[label] = [];
-      groups.push(label);
-    }
+    if (!groupMap[label]) { groupMap[label] = []; groups.push(label); }
     groupMap[label].push(s);
   });
 
-  // Sort groups: known recency labels first in order, then alphabetically descending (most recent month first)
   groups.sort((a, b) => {
     const ai = ORDER.indexOf(a), bi = ORDER.indexOf(b);
     if (ai !== -1 && bi !== -1) return ai - bi;
     if (ai !== -1) return -1;
     if (bi !== -1) return 1;
-    return b.localeCompare(a); // month-year strings, newest first
+    return b.localeCompare(a);
   });
 
   function cardHtml(s) {
-    return `<div class="hist-card">
-      <div class="hist-head">
-        <div class="hist-head-l">
-          ${s.restaurant ? `<div class="hist-restaurant">${esc(s.restaurant)}</div>` : ''}
-          <div class="hist-total">${fmt(s.total)}</div>
-          <div class="hist-date">${s.date}</div>
-        </div>
-        <button class="hist-del" onclick="delSession('${s.id}')">
-          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-        </button>
-      </div>
-      <div class="hist-sections">
-        ${s.sections.map(sec => `
-          <div class="hist-sec-lbl">${esc(sec.name)}</div>
-          ${sec.items.map(i => `
-            <div class="hist-item-row">
-              <span>${esc(i.name)}${i.qty>1?' ×'+i.qty:''}</span>
-              <span>${i.price>0?fmt(i.price*i.qty):'—'}</span>
-            </div>`).join('')}
-        `).join('')}
-      </div>
-      <div class="hist-grand"><span>Total</span><span>${fmt(s.total)}</span></div>
-    </div>`;
+    return '<div class="hist-card">'
+      + '<div class="hist-head">'
+      + '<div class="hist-head-l">'
+      + (s.restaurant ? '<div class="hist-restaurant">' + esc(s.restaurant) + '</div>' : '')
+      + '<div class="hist-total">' + fmt(s.total) + '</div>'
+      + '<div class="hist-date">' + s.date + '</div>'
+      + '</div>'
+      + '<button class="hist-del" onclick="delSession(' + JSON.stringify(s.id) + ')">'
+      + '<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>'
+      + '</button></div>'
+      + '<div class="hist-sections">'
+      + s.sections.map(function(sec) {
+          return '<div class="hist-sec-lbl">' + esc(sec.name) + '</div>'
+            + sec.items.map(function(i) {
+                return '<div class="hist-item-row">'
+                  + '<span>' + esc(i.name) + (i.qty > 1 ? ' ×' + i.qty : '') + '</span>'
+                  + '<span>' + (i.price > 0 ? fmt(i.price * i.qty) : '—') + '</span>'
+                  + '</div>';
+              }).join('');
+        }).join('')
+      + '</div>'
+      + '<div class="hist-grand"><span>Total</span><span>' + fmt(s.total) + '</span></div>'
+      + '</div>';
   }
 
-  el.innerHTML = groups.map(label => {
+  const expandedIdx = new Set(JSON.parse(sessionStorage.getItem('hist-exp-idx') || '[0]'));
+
+  window._histToggle = function(i) {
+    if (expandedIdx.has(i)) expandedIdx.delete(i);
+    else expandedIdx.add(i);
+    sessionStorage.setItem('hist-exp-idx', JSON.stringify(Array.from(expandedIdx)));
+    renderHist();
+  };
+
+  var html = '';
+  groups.forEach(function(label, i) {
     const items = groupMap[label];
-    return `<div class="hist-group-lbl">
-      <span class="hist-group-text">${label}</span>
-      <div class="hist-group-line"></div>
-      <span class="hist-group-count">${items.length} order${items.length===1?'':'s'}</span>
-    </div>
-    ${items.map(cardHtml).join('')}`;
-  }).join('');
+    const isOpen = expandedIdx.has(i);
+    const totalAmt = items.reduce(function(sum, s) { return sum + s.total; }, 0);
+    const rot = isOpen ? '90' : '0';
+    html += '<div class="hist-group-row" onclick="_histToggle(' + i + ')">'
+      + '<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">'
+      + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2.2" stroke-linecap="round" style="flex-shrink:0;transition:transform .2s;transform:rotate(' + rot + 'deg)"><polyline points="9 18 15 12 9 6"/></svg>'
+      + '<span class="hist-group-text">' + label + '</span>'
+      + '<div class="hist-group-line"></div>'
+      + '</div>'
+      + '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0">'
+      + '<span class="hist-group-count">' + items.length + ' order' + (items.length === 1 ? '' : 's') + '</span>'
+      + '<span class="hist-grp-amt">' + fmt(totalAmt) + '</span>'
+      + '</div></div>'
+      + (isOpen ? items.map(cardHtml).join('') : '');
+  });
+  el.innerHTML = html;
 }
 
 function delSession(id) {
