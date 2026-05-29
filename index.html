@@ -73,8 +73,10 @@
 [data-theme="light"] .cat-hdr{background:#fff;border:1px solid var(--bd);}
 [data-theme="light"] .items-card{background:#fff;border:1px solid var(--bd);}
 [data-theme="light"] .item-num{background:#e8e8f0;color:#505068;}
-[data-theme="light"] .item-del{border-color:#c0c0d0;color:#9090a8;}
+[data-theme="light"] .item-del{background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.35);color:var(--red);}
 [data-theme="light"] .item-del:active{background:var(--red);color:#fff;border-color:var(--red);}
+[data-theme="light"] .cat-del{background:rgba(248,113,113,.1) !important;border-color:rgba(248,113,113,.35) !important;}
+[data-theme="light"] .cat-del svg{stroke:var(--red) !important;}
 /* qty buttons use colour in both modes */
 [data-theme="light"] .sticky-add-btn{border-color:var(--acc);}
 
@@ -132,7 +134,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 
 /* ── Restaurant strip ── */
 .rest-strip{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rl);display:flex;align-items:center;gap:10px;padding:10px 14px;margin-bottom:10px;}
-.rest-strip svg{width:14px;height:14px;stroke:var(--t3);fill:none;stroke-width:1.8;stroke-linecap:round;flex-shrink:0;}
+.rest-strip svg{width:16px;height:16px;stroke:var(--t2);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;}
 .rest-field{flex:1;border:none;background:transparent;font-size:.9rem;font-family:'DM Sans',sans-serif;font-weight:500;color:var(--t1);outline:none;}
 .rest-field::placeholder{color:var(--t3)}
 
@@ -277,7 +279,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 .cat-add-inp{flex:1;font-size:.95rem;font-family:'DM Sans',sans-serif;font-weight:500;padding:10px 13px;border:1px solid var(--bd);border-radius:var(--r);background:var(--sf);color:var(--t1);outline:none;transition:border-color 150ms,box-shadow 150ms;}
 .cat-add-inp:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(249,115,22,.12);}
 .cat-add-inp::placeholder{color:var(--t3)}
-.cat-add-btn{padding:10px 16px;background:var(--acc-bg);border:1px solid var(--acc-bd);border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:.86rem;font-weight:700;color:var(--acc);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:all 120ms;}
+.cat-add-btn{padding:10px 16px;background:var(--acc);border:1px solid var(--acc);border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:.86rem;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:all 120ms;}
 .cat-add-btn:active{opacity:.75}
 .cat-add-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;}
 .cat-list-wrap{display:flex;flex-direction:column;gap:6px;}
@@ -357,10 +359,11 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 .set-sub{font-size:.72rem;color:var(--t3);margin-top:2px;}
 .tog-wrap{position:relative;width:44px;height:24px;cursor:pointer;}
 .tog-wrap input{opacity:0;width:0;height:0;position:absolute}
-.tog-track{position:absolute;inset:0;background:var(--sf3);border:1px solid var(--bd);border-radius:100px;transition:all .2s;}
+.tog-track{position:absolute;inset:0;background:var(--bd);border:1px solid var(--bd);border-radius:100px;transition:all .2s;}
 .tog-wrap input:checked+.tog-track{background:var(--acc);border-color:var(--acc);}
-.tog-thumb{position:absolute;width:18px;height:18px;background:var(--t3);border-radius:50%;top:2px;left:2px;transition:transform .2s;}
+.tog-thumb{position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:2px;left:2px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3);}
 .tog-wrap input:checked~.tog-thumb{transform:translateX(18px);background:#fff;}
+[data-theme="light"] .tog-track{background:#d1d1d6;border-color:#d1d1d6;}
 .size-seg{display:flex;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;}
 .sz{flex:1;padding:7px 10px;border:none;border-right:1px solid var(--bd);background:none;font-size:.8rem;font-weight:600;color:var(--t3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .12s;}
 .sz:last-child{border-right:none}
@@ -463,8 +466,17 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 <div id="pg-home" class="pg active">
   <div class="wrap">
     <div class="rest-strip">
-      <!-- plate + fork & knife restaurant icon -->
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M5 3v4c0 1.1.9 2 2 2s2-.9 2-2V3"/><line x1="7" y1="3" x2="7" y2="5"/><path d="M19 3v18"/><path d="M17 3c0 0 2 1.5 2 4s-2 4-2 4"/></svg>
+      <!-- simple fork + knife icon, bold and readable at small size -->
+      <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <!-- fork: 3 tines + handle -->
+        <line x1="6" y1="2" x2="6" y2="22"/>
+        <line x1="4" y1="2" x2="4" y2="7"/>
+        <line x1="8" y1="2" x2="8" y2="7"/>
+        <path d="M4 7 Q6 10 8 7"/>
+        <!-- knife -->
+        <line x1="18" y1="2" x2="18" y2="22"/>
+        <path d="M18 2 Q22 5 18 10"/>
+      </svg>
       <input class="rest-field" id="rest-name" placeholder="Restaurant name (optional)" autocorrect="off"/>
     </div>
     <div id="order-list"></div>
