@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="OrderTracker">
-<meta name="theme-color" content="#141414">
+<meta name="theme-color" content="#212121">
 <title>OrderTracker</title>
 <script>
 (function(){
@@ -37,9 +37,9 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --bg:#141414;--sf:#1c1c1e;--sf2:#242426;--sf3:#2c2c2e;
-  --bd:#3a3a3c;--bd2:#2c2c2e;
-  --t1:#f2f2f7;--t2:#8e8e93;--t3:#545458;
+  --bg:#212121;--sf:#2a2a2a;--sf2:#333333;--sf3:#3c3c3c;
+  --bd:#4a4a4a;--bd2:#3c3c3c;
+  --t1:#f5f5f5;--t2:#c0c0c0;--t3:#888888;
   --scrim:rgba(0,0,0,.82);
   --acc:#f97316;--acc2:#ea6a0a;--acc-bg:rgba(249,115,22,.08);--acc-bd:rgba(249,115,22,.16);
   --green:#34d399;--gbg:rgba(52,211,153,.08);
@@ -54,6 +54,18 @@
   --ease:cubic-bezier(.16,1,.3,1);--spring:cubic-bezier(.34,1.56,.64,1);
   --fs:15px;
 }
+/* Pitch dark appearance */
+[data-appearance="pitch"]{
+  --bg:#0d0d0d !important;--sf:#141414 !important;--sf2:#1a1a1a !important;--sf3:#222222 !important;
+  --bd:#303030 !important;--bd2:#222222 !important;
+  --t1:#f5f5f5 !important;--t2:#c0c0c0 !important;--t3:#888888 !important;
+}
+/* Grey dark appearance (default) */
+[data-appearance="grey"]{
+  --bg:#212121 !important;--sf:#2a2a2a !important;--sf2:#333333 !important;--sf3:#3c3c3c !important;
+  --bd:#4a4a4a !important;--bd2:#3c3c3c !important;
+  --t1:#f5f5f5 !important;--t2:#c0c0c0 !important;--t3:#888888 !important;
+}
 [data-theme="light"]{
   --bg:#f0f0f5;--sf:#ffffff;--sf2:#f8f8fc;--sf3:#eeeef6;
   --bd:#d0d0e0;--bd2:#e0e0ee;--t1:#12121e;--t2:#505068;--t3:#9090a8;
@@ -65,9 +77,7 @@
 [data-theme="light"] .hdr{background:rgba(240,240,245,.96)!important;}
 [data-theme="light"] .tbar{background:rgba(240,240,245,.96)!important;border-top:1px solid var(--bd)!important;}
 [data-theme="light"] .sticky-bar{background:rgba(240,240,245,.96)!important;border-top:1px solid var(--bd)!important;}
-[data-theme="dark"] .hdr{background:rgba(20,20,20,.97)!important;}
-[data-theme="dark"] .tbar{background:rgba(20,20,20,.97)!important;}
-[data-theme="dark"] .sticky-bar{background:rgba(20,20,20,.98)!important;}
+/* header/tbar/sticky use var(--bg) via color-mix - no hardcoded overrides needed */
 
 /* ── Light mode targeted fixes ── */
 [data-theme="light"] .cat-hdr{background:#fff;border:1px solid var(--bd);}
@@ -88,7 +98,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 /* ── Header ── */
 .hdr{
   position:fixed;top:0;left:0;right:0;z-index:80;
-  background:rgba(20,20,20,.97);
+  background:var(--bg);
   backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
   border-bottom:1px solid var(--bd2);
   padding-top:max(env(safe-area-inset-top,0px), 14px);
@@ -115,7 +125,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 /* ── Tab bar — 4 items ── */
 .tbar{
   position:fixed;bottom:0;left:0;right:0;z-index:200;
-  background:rgba(20,20,20,.97);
+  background:var(--bg);
   backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
   border-top:1px solid var(--bd2);
   /* total height = nav content area + safe area at bottom */
@@ -182,7 +192,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 
 /* veg toggle */
 .veg-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;background:var(--sf2);}
-.vseg{padding:9px 6px;border:none;background:none;font-size:.8rem;font-weight:600;color:var(--t3);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .14s;border-right:1px solid var(--bd);display:flex;align-items:center;justify-content:center;gap:5px;}
+.vseg{padding:9px 6px;border:none;background:none;font-size:.8rem;font-weight:600;color:var(--t2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .14s;border-right:1px solid var(--bd);display:flex;align-items:center;justify-content:center;gap:5px;}
 .vseg:last-child{border-right:none}
 .vseg.av{background:rgba(52,211,153,.15);color:var(--green);}
 .vseg.an{background:rgba(248,113,113,.15);color:var(--red);}
@@ -256,7 +266,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
   left:0;right:0;z-index:201;
   max-width:480px;margin:0 auto;
   padding:10px 14px;
-  background:rgba(20,20,20,.98);
+  background:var(--bg);
   backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
   border-top:1px solid var(--bd2);
   display:none;
@@ -566,12 +576,22 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 <div id="pg-settings" class="pg">
   <div class="wrap">
     <div class="set-card">
-      <div class="set-row">
-        <span class="set-label">Dark Mode</span>
-        <label class="tog-wrap">
-          <input type="checkbox" id="dark-chk" onchange="dark=this.checked;save();applyDark()"/>
-          <div class="tog-track"></div><div class="tog-thumb"></div>
-        </label>
+      <div class="set-row" style="flex-direction:column;align-items:flex-start;gap:10px">
+        <span class="set-label">Appearance</span>
+        <div style="display:flex;gap:8px;width:100%">
+          <button class="app-btn" data-val="light" onclick="setAppearance('light')"
+            style="flex:1;padding:9px 6px;border-radius:var(--r);border:1px solid var(--bd);background:var(--sf3);color:var(--t2);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:4px">
+            <span style="font-size:1rem">☀️</span>Light
+          </button>
+          <button class="app-btn" data-val="grey" onclick="setAppearance('grey')"
+            style="flex:1;padding:9px 6px;border-radius:var(--r);border:1px solid var(--bd);background:var(--sf3);color:var(--t2);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:4px">
+            <span style="font-size:1rem">🌙</span>Grey Dark
+          </button>
+          <button class="app-btn" data-val="pitch" onclick="setAppearance('pitch')"
+            style="flex:1;padding:9px 6px;border-radius:var(--r);border:1px solid var(--bd);background:var(--sf3);color:var(--t2);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:4px">
+            <span style="font-size:1rem">⚫</span>Pitch Dark
+          </button>
+        </div>
       </div>
       <div class="set-row">
         <span class="set-label">Text Size</span>
@@ -667,7 +687,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 'use strict';
 
 // ── State ──
-let categories = [], sections = [], sessions = [], dark = true, fs = 15, gstPct = 5, vegMode = 'other';
+let categories = [], sections = [], sessions = [], dark = true, appearance = 'grey', fs = 15, gstPct = 5, vegMode = 'other';
 let currentTab = 'home';
 
 try {
@@ -676,6 +696,7 @@ try {
   if (Array.isArray(d.sections)) sections = d.sections;
   if (Array.isArray(d.sessions)) sessions = d.sessions;
   if (d.dark !== undefined) dark = d.dark;
+  if (d.appearance) appearance = d.appearance;
   if (d.fs) fs = d.fs;
   if (d.gstPct !== undefined) gstPct = d.gstPct;
 } catch(e) {}
@@ -701,13 +722,36 @@ sections = sections.filter(s => s.items.length > 0);
 save();
 
 function save() {
-  try { localStorage.setItem('fm_v8', JSON.stringify({categories, sections, sessions, dark, fs, gstPct})); } catch(e) {}
+  try { localStorage.setItem('fm_v8', JSON.stringify({categories, sections, sessions, dark, appearance, fs, gstPct})); } catch(e) {}
 }
 
 // ── Theme / Font ──
 function applyDark() {
   document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-appearance', appearance);
   const chk = document.getElementById('dark-chk'); if (chk) chk.checked = dark;
+  // Highlight active appearance button
+  setTimeout(() => {
+    document.querySelectorAll('.app-btn').forEach(b => {
+      const isActive = b.dataset.val === appearance;
+      b.style.background = isActive ? 'var(--acc)' : 'var(--sf3)';
+      b.style.color = isActive ? '#fff' : 'var(--t2)';
+      b.style.borderColor = isActive ? 'var(--acc)' : 'var(--bd)';
+    });
+  }, 50);
+}
+function setAppearance(val) {
+  appearance = val;
+  // pitch forces dark, light forces light, grey keeps current dark setting
+  if (val === 'pitch') { dark = true; }
+  if (val === 'light') { dark = false; }
+  save(); applyDark();
+  // Update appearance buttons
+  document.querySelectorAll('.app-btn').forEach(b => {
+    b.style.background = b.dataset.val === val ? 'var(--acc)' : 'var(--sf3)';
+    b.style.color = b.dataset.val === val ? '#fff' : 'var(--t2)';
+    b.style.borderColor = b.dataset.val === val ? 'var(--acc)' : 'var(--bd)';
+  });
 }
 function applyFont() {
   // rem units are relative to html font-size, so set that directly
@@ -1248,6 +1292,15 @@ function delSession(id) {
 // ── Settings tab ──
 function renderSettings() {
   const chk = document.getElementById('dark-chk'); if (chk) chk.checked = dark;
+  // Highlight active appearance button
+  setTimeout(() => {
+    document.querySelectorAll('.app-btn').forEach(b => {
+      const isActive = b.dataset.val === appearance;
+      b.style.background = isActive ? 'var(--acc)' : 'var(--sf3)';
+      b.style.color = isActive ? '#fff' : 'var(--t2)';
+      b.style.borderColor = isActive ? 'var(--acc)' : 'var(--bd)';
+    });
+  }, 50);
   const gstInp = document.getElementById('gst-inp'); if (gstInp) gstInp.value = gstPct;
   const seg = document.getElementById('size-seg');
   if (seg) {
