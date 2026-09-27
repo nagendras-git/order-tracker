@@ -1162,10 +1162,14 @@ function doValidate(ourTotal) {
   const tipAmtEl = document.getElementById('tip-amt');
   if (tipAmtEl) tipAmtEl.textContent = fmt(tipAmt);
 
+  // "Your total" shown to the user includes tip (what you actually pay).
   const totalWithExtras = ourTotal + gstAmt + tipAmt;
+  // But the restaurant's printed bill never includes YOUR tip, so the
+  // match/mismatch check must compare against total WITHOUT tip.
+  const compareTotal = ourTotal + gstAmt;
   if (!rest) { el.innerHTML = ''; return; }
 
-  const diff = rest - totalWithExtras, abs = Math.abs(diff), pct = totalWithExtras > 0 ? (abs/totalWithExtras*100).toFixed(1) : 0;
+  const diff = rest - compareTotal, abs = Math.abs(diff), pct = compareTotal > 0 ? (abs/compareTotal*100).toFixed(1) : 0;
   let cls, pill, title, sub;
   if (abs <= 5) { cls='match'; pill='Match'; title='Bills are identical'; sub='Your total and restaurant bill are the same. You\'re all good!'; }
   else if (diff > 0) { cls='over'; pill='Overcharged'; title='Restaurant charged '+fmt(abs)+' more ('+pct+'%)'; sub='Check for extra items, service charge, or taxes.'; }
@@ -1182,9 +1186,10 @@ function doValidate(ourTotal) {
     <div class="diff-title">${title}</div><div class="diff-sub">${sub}</div>
   </div><div class="diff-table">
     ${gstAmt>0?`<div class="diff-tr"><span class="diff-td-l">GST (${gstPct}%)</span><span class="diff-td-r">${fmt(gstAmt)}</span></div>`:''}
-    ${tipAmt>0?`<div class="diff-tr"><span class="diff-td-l">Tip</span><span class="diff-td-r">${fmt(tipAmt)}</span></div>`:''}
-    <div class="diff-tr"><span class="diff-td-l">Your total</span><span class="diff-td-r">${fmt(totalWithExtras)}</span></div>
+    <div class="diff-tr"><span class="diff-td-l">Your total</span><span class="diff-td-r">${fmt(compareTotal)}</span></div>
     <div class="diff-tr"><span class="diff-td-l">Restaurant bill</span><span class="diff-td-r">${fmt(rest)}</span></div>
+    ${tipAmt>0?`<div class="diff-tr"><span class="diff-td-l">Tip (extra, paid by you)</span><span class="diff-td-r">${fmt(tipAmt)}</span></div>`:''}
+    ${tipAmt>0?`<div class="diff-tr"><span class="diff-td-l">Total you pay (incl. tip)</span><span class="diff-td-r">${fmt(totalWithExtras)}</span></div>`:''}
     ${diffRow}
   </div></div>`;
 }
